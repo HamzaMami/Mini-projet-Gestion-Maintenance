@@ -1,257 +1,44 @@
-# 🔧 Maintenance Management System
+Maintenance App — MySQL configuration
 
-A full-stack application to manage equipment, failures, interventions,
-and technicians in a maintenance context.
+What I changed
+- Switched the project from H2 in-memory to MySQL.
+- Edited `pom.xml` to include the MySQL Connector/J runtime dependency (`com.mysql:mysql-connector-j:8.0.33`).
+- Updated `src/main/resources/application.properties` to use a MySQL datasource URL and added the Hibernate MySQL dialect.
 
----
+Files changed
+- `pom.xml`
+- `src/main/resources/application.properties`
 
-## 🧱 Tech Stack
+How to configure your MySQL database
+1. Create a database and a user (run these in your MySQL shell or via an admin tool):
 
-| Layer | Technology |
-|---|---|
-| Backend | Spring Boot 4.0.5 |
-| Database | H2 (in-memory) |
-| Frontend | Angular (coming soon) |
-| Language | Java 25 |
-| ORM | Hibernate / JPA |
-| Build Tool | Maven |
-
----
-
-## 📦 Project Structure
-
-```
-com.maintenance.maintenanceapp/
-├── controller/        → HTTP request handlers
-├── service/           → Business logic interfaces
-│     └── impl/        → Business logic implementations
-├── repository/        → Database access (JPA)
-├── entity/            → Database tables as Java classes
-├── dto/               → Data Transfer Objects
-├── config/            → CORS configuration
-└── exception/         → Global exception handling
+```sql
+CREATE DATABASE maintenance_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'maintenance_user'@'localhost' IDENTIFIED BY 'your_secure_password';
+GRANT ALL PRIVILEGES ON maintenance_db.* TO 'maintenance_user'@'localhost';
+FLUSH PRIVILEGES;
 ```
 
----
+2. Edit `src/main/resources/application.properties` and set the username/password and, if needed, the host/port.
 
-## 🗄️ Database Design
+Quick run (from project root on Windows PowerShell):
 
-### Entities
+```powershell
+# Build the project (downloads dependencies)
+.\mvnw -DskipTests package
 
-| Entity | Fields |
-|---|---|
-| `Equipement` | id, nom, etat, dateAcquisition |
-| `Panne` | id, description, categorie, dateSignalement, equipement |
-| `Technicien` | id, nom, competences, disponibilite |
-| `Intervention` | id, statut, date, cout, equipement, technicien |
-
-### Relationships
-```
-1 Equipement  →  many Pannes
-1 Equipement  →  many Interventions
-1 Technicien  →  many Interventions
+# Run the app
+.\mvnw spring-boot:run
+# or run the built jar
+java -jar target\maintenance-app-0.0.1-SNAPSHOT.jar
 ```
 
-### Intervention Status (Enum)
-```
-PLANIFIE → EN_COURS → TERMINE
-```
+Notes and next steps
+- The app uses `spring.jpa.hibernate.ddl-auto=update` by default so Hibernate will create/alter tables automatically. For production, switch to validated migrations (Flyway/Liquibase) or `ddl-auto=validate`.
+- I left some transitive dependency security warnings from the IDE's scanner (these come from Spring Boot starter dependencies). They don't block the build but you may want to review dependency versions.
+- If you prefer credentials outside of source control, move them to environment variables or an external config (e.g., `application-local.properties`) and use Spring profiles.
 
----
-
-## 🌐 API Endpoints
-
-### Equipement
-```
-GET    /api/equipements         → get all
-GET    /api/equipements/{id}    → get by id
-POST   /api/equipements         → create
-PUT    /api/equipements/{id}    → update
-DELETE /api/equipements/{id}    → delete
-```
-
-### Panne
-```
-GET    /api/pannes              → get all
-GET    /api/pannes/{id}         → get by id
-POST   /api/pannes              → create
-PUT    /api/pannes/{id}         → update
-DELETE /api/pannes/{id}         → delete
-```
-
-### Technicien
-```
-GET    /api/techniciens         → get all
-GET    /api/techniciens/{id}    → get by id
-POST   /api/techniciens         → create
-PUT    /api/techniciens/{id}    → update
-DELETE /api/techniciens/{id}    → delete
-```
-
-### Intervention
-```
-GET    /api/interventions                        → get all
-GET    /api/interventions/{id}                   → get by id
-POST   /api/interventions                        → create
-PUT    /api/interventions/{id}                   → update
-DELETE /api/interventions/{id}                   → delete
-PUT    /api/interventions/{id}/assign/{techId}   → assign technician
-```
-
-### Dashboard
-```
-GET    /api/dashboard           → get system summary
-```
-
----
-
-## 📤 Request Body Examples
-
-### POST /api/equipements
-```json
-{
-    "nom": "Ordinateur Dell",
-    "etat": "FONCTIONNEL",
-    "dateAcquisition": "2024-01-15"
-}
-```
-
-### POST /api/techniciens
-```json
-{
-    "nom": "Ahmed Ben Ali",
-    "competences": "Electricité, Informatique",
-    "disponibilite": true
-}
-```
-
-### POST /api/pannes
-```json
-{
-    "description": "Ecran cassé",
-    "categorie": "Matériel",
-    "dateSignalement": "2024-03-10",
-    "equipement": {
-        "id": 1
-    }
-}
-```
-
-### POST /api/interventions
-```json
-{
-    "statut": "PLANIFIE",
-    "date": "2024-03-15",
-    "cout": 150.0,
-    "equipement": {
-        "id": 1
-    }
-}
-```
-
-### GET /api/dashboard response
-```json
-{
-    "totalPannes": 1,
-    "totalInterventions": 1,
-    "totalTechniciens": 1,
-    "techniciensDisponibles": 1
-}
-```
-
----
-
-## ⚙️ Configuration
-
-```properties
-# application.properties
-spring.datasource.url=jdbc:h2:mem:maintenancedb
-spring.datasource.driver-class-name=org.h2.Driver
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
-server.port=8080
-spring.jpa.hibernate.ddl-auto=create-drop
-spring.jpa.show-sql=true
-```
-
----
-
-## 🚀 How to Run
-
-**1. Clone the repository:**
-```bash
-git clone https://github.com/HamzaMami/Mini-projet-Gestion-Maintenance.git
-```
-
-**2. Navigate to the project:**
-```bash
-cd maintenance-app
-```
-
-**3. Run with Maven:**
-```bash
-./mvnw spring-boot:run
-```
-
-**4. Access the app:**
-```
-API Base URL  → http://localhost:8080
-H2 Console    → http://localhost:8080/h2-console
-```
-
-**5. H2 Console login:**
-```
-JDBC URL  → jdbc:h2:mem:maintenancedb
-Username  → sa
-Password  → (leave empty)
-```
-
----
-
-## 🏗️ Architecture
-
-```
-Client (Postman / Angular)
-        ↓
-@RestController   → receives HTTP requests
-        ↓
-@Service          → business logic
-        ↓
-@Repository       → database access
-        ↓
-H2 Database       → stores data
-```
-
----
-
-## 🌱 Spring Beans Used
-
-| Annotation | Role |
-|---|---|
-| `@RestController` | API layer |
-| `@Service` | Business logic |
-| `@Repository` | Data access |
-| `@Configuration` | CORS config |
-
----
-
-## ✅ Development Status
-
-- [x] Project setup
-- [x] Entities
-- [x] Repositories
-- [x] Services
-- [x] Controllers
-- [x] CORS Configuration
-- [x] Exception Handling
-- [x] Dashboard Endpoint
-- [x] Postman Testing
-- [ ] Angular Frontend
-- [ ] Final Testing
-- [ ] Final Review
-
----
-
-## 👨‍💻 Author
-
-Hamza Mami — GL2 JEE Project
+If you want, I can also:
+- Add a sample `application-local.properties` and use profiles.
+- Add Flyway migrations instead of `ddl-auto=update`.
+- Wire up Docker Compose for MySQL to make local setup reproducible.
