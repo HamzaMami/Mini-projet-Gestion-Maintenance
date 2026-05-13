@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+// 1. Core Design Tokens
+:root {
+  --bg-app: #f4f7fe;
+  --bg-sidebar: #ffffff;
+  --primary-blue: #4a90e2;
+  --primary-red: #e53e3e;
+  --primary-green: #38a169;
+  --primary-purple: #805ad5;
+  --text-main: #1a1a2e;
+  --text-secondary: #718096;
+  --text-muted: #a0aec0;
+  --glass-border: #edf2f7;
+}
+
+// 2. Base Styles
+html, body {
+  margin: 0; padding: 0; height: 100%; width: 100%;
+  background-color: var(--bg-app) !important;
+  color: var(--text-main) !important;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+
+// 3. Reusable Layout Patterns
+.page-container { display: flex; flex-direction: column; gap: 2rem; }
+.header { display: flex; justify-content: space-between; align-items: flex-end; }
+.title-group { h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.3rem; } p { color: var(--text-secondary); } }
+
+// 4. Global UI Components
+.glass-card {
+  background: white !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.btn-neon {
+  background: linear-gradient(180deg, #4a90e2 0%, #357abd 100%) !important;
+  color: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  font-weight: 600 !important;
+  padding: 1rem 2rem !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;
+  font-size: 1rem; appearance: none; transition: 0.3s;
+  .iconify { color: white !important; font-size: 1.3rem; }
+  &:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(74, 144, 226, 0.35); }
+  &:disabled { opacity: 0.7; cursor: not-allowed; }
+}
+
+.btn-glass {
+  background: white !important; color: var(--text-main) !important; border: 1px solid #e2e8f0 !important;
+  padding: 1rem 2rem !important; border-radius: 14px !important; font-weight: 600; cursor: pointer; transition: 0.3s;
+  &:hover { background: #f8fafc !important; transform: translateY(-2px); }
+}
+
+.btn-icon {
+  background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px; transition: 0.2s;
+  &:hover { background: #f1f5f9; }
+}
+
+// 5. Data Table Standard
+.table-card { padding: 1rem; }
+table { width: 100%; border-collapse: collapse; }
+th { padding: 1.2rem; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid #f1f5f9; }
+td { padding: 1.2rem; border-bottom: 1px solid #f1f5f9; color: #2d3748; }
+tr:hover { background: #f8fafc; }
+
+// 6. Badges & Indicators
+.badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 0.4rem 0.9rem; border-radius: 50px; font-size: 0.75rem; font-weight: 700;
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  &.success, &.termine { background: #f0fff4; color: var(--primary-green); .dot { background: var(--primary-green); } }
+  &.danger, &.offline { background: #fff5f5; color: var(--primary-red); .dot { background: var(--primary-red); } }
+  &.warning, &.en_cours { background: #fffaf0; color: #dd6b20; .dot { background: #dd6b20; } }
+  &.planifie { background: #ebf8ff; color: var(--primary-blue); .dot { background: var(--primary-blue); } }
+}
+
+// 7. Modals
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.modal-card { width: 500px; max-width: 90vw; padding: 2.5rem; background: white; border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1); }
+
+// 8. Forms
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  
+  input, select, textarea {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem;
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    width: 100%;
+    
+    &:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
+    }
+  }
+  
+  textarea { min-height: 100px; resize: vertical; }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+// Toggle Switch
+.toggle {
+  width: 44px;
+  height: 22px;
+  background: #edf2f7;
+  border-radius: 50px;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  transition: 0.3s;
+  
+  &:after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: 0.3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  &.active {
+    background: var(--primary-green);
+    &:after {
+      left: 24px;
+    }
+  }
+}
+
+// 9. Utility Classes
+.bold { font-weight: 600; }
+.text-right { text-align: right; }
+.blue-text { color: var(--primary-blue); }
+.red-text { color: var(--primary-red); }
+.purple-text { color: var(--primary-purple); }
+.id-cell { font-family: monospace; color: var(--primary-blue); opacity: 0.8; }
+.empty-state { padding: 5rem; text-align: center; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+.spinning { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }

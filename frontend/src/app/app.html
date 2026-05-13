@@ -1,0 +1,62 @@
+<div class="app-layout">
+  <!-- Sidebar (Hidden on Login) -->
+  <aside class="sidebar" *ngIf="!isLoginPage">
+    <div class="logo">
+      <span class="iconify" data-icon="lucide:shield-check"></span>
+      Maintenix
+    </div>
+
+    <nav>
+      <ul class="nav-links">
+        <li>
+          <a routerLink="/dashboard" routerLinkActive="active">
+            <span class="iconify nav-icon" data-icon="lucide:layout-dashboard"></span>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a routerLink="/equipements" routerLinkActive="active">
+            <span class="iconify nav-icon" data-icon="lucide:monitor"></span>
+            Equipments
+          </a>
+        </li>
+        <li>
+          <a routerLink="/pannes" routerLinkActive="active">
+            <span class="iconify nav-icon" data-icon="lucide:alert-triangle"></span>
+            Failures
+          </a>
+        </li>
+        <li>
+          <a routerLink="/interventions" routerLinkActive="active">
+            <span class="iconify nav-icon" data-icon="lucide:wrench"></span>
+            Interventions
+          </a>
+        </li>
+        <li>
+          <a routerLink="/techniciens" routerLinkActive="active">
+            <span class="iconify nav-icon" data-icon="lucide:users"></span>
+            Technicians
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <p>© 2026 Maintenix v2.0</p>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="top-nav" *ngIf="!isLoginPage">
+      <div class="system-status">
+        <div class="status-indicator"></div>
+        System Online
+      </div>
+    </header>
+
+    <div class="content-wrapper" [style.padding]="isLoginPage ? '0' : '0 3.5rem 3.5rem 3.5rem'">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

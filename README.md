@@ -1,44 +1,103 @@
-Maintenance App — MySQL configuration
+# 🔧 Maintenance Management System
 
-What I changed
-- Switched the project from H2 in-memory to MySQL.
-- Edited `pom.xml` to include the MySQL Connector/J runtime dependency (`com.mysql:mysql-connector-j:8.0.33`).
-- Updated `src/main/resources/application.properties` to use a MySQL datasource URL and added the Hibernate MySQL dialect.
+A full-stack application to manage equipment, failures, interventions,
+and technicians in a maintenance context.
 
-Files changed
-- `pom.xml`
-- `src/main/resources/application.properties`
+---
 
-How to configure your MySQL database
-1. Create a database and a user (run these in your MySQL shell or via an admin tool):
+## 🧱 Tech Stack
 
-```sql
-CREATE DATABASE maintenance_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'maintenance_user'@'localhost' IDENTIFIED BY 'your_secure_password';
-GRANT ALL PRIVILEGES ON maintenance_db.* TO 'maintenance_user'@'localhost';
-FLUSH PRIVILEGES;
+| Layer | Technology |
+|---|---|
+| Backend | Spring Boot 4.0.5 |
+| Database | MySQL |
+| Frontend | Angular 17+ (Standalone) |
+| Language | Java 25 & TypeScript |
+| ORM | Hibernate / JPA |
+| Build Tool | Maven & NPM |
+
+---
+
+## 📦 Project Structure
+
+```
+maintenance-app/
+├── backend/            → Spring Boot Project
+│     ├── src/          → Java source code
+│     ├── pom.xml       → Maven configuration
+│     └── ...
+└── frontend/           → Angular Project
+      ├── src/app/      → Angular source code
+      ├── package.json  → NPM configuration
+      └── ...
 ```
 
-2. Edit `src/main/resources/application.properties` and set the username/password and, if needed, the host/port.
+---
 
-Quick run (from project root on Windows PowerShell):
+## 🗄️ Database Design
 
-```powershell
-# Build the project (downloads dependencies)
-.\mvnw -DskipTests package
+### Entities
 
-# Run the app
-.\mvnw spring-boot:run
-# or run the built jar
-java -jar target\maintenance-app-0.0.1-SNAPSHOT.jar
+| Entity | Fields |
+|---|---|
+| `Equipement` | id, nom, etat, dateAcquisition |
+| `Panne` | id, description, categorie, dateSignalement, equipement |
+| `Technicien` | id, nom, competences, disponibilite |
+| `Intervention` | id, statut, date, cout, equipement, technician |
+
+### Relationships
+```
+1 Equipement  →  many Pannes
+1 Equipement  →  many Interventions
+1 Technicien  →  many Interventions
 ```
 
-Notes and next steps
-- The app uses `spring.jpa.hibernate.ddl-auto=update` by default so Hibernate will create/alter tables automatically. For production, switch to validated migrations (Flyway/Liquibase) or `ddl-auto=validate`.
-- I left some transitive dependency security warnings from the IDE's scanner (these come from Spring Boot starter dependencies). They don't block the build but you may want to review dependency versions.
-- If you prefer credentials outside of source control, move them to environment variables or an external config (e.g., `application-local.properties`) and use Spring profiles.
+---
 
-If you want, I can also:
-- Add a sample `application-local.properties` and use profiles.
-- Add Flyway migrations instead of `ddl-auto=update`.
-- Wire up Docker Compose for MySQL to make local setup reproducible.
+## 🌐 API Endpoints
+
+### Base URL: `/api`
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/equipements` | GET | Get all equipment |
+| `/pannes` | GET | Get all failures |
+| `/interventions` | GET | Get all interventions |
+| `/dashboard` | GET | Get system summary |
+
+---
+
+## 🚀 How to Run
+
+### 1. Backend Setup
+```bash
+cd backend
+# Update application.properties with your MySQL credentials
+./mvnw spring-boot:run
+```
+
+### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+npm start
+```
+
+---
+
+## ✅ Development Status
+
+- [x] Project Restructuring (Backend/Frontend)
+- [x] Backend API Implementation
+- [x] MySQL Integration
+- [x] Angular Frontend Setup
+- [x] Dashboard Component
+- [x] Equipement List Component
+- [ ] Full Frontend Implementation
+- [ ] Final Testing
+
+---
+
+## 👨💻 Author
+
+Hamza Mami — GL2 JEE Project
