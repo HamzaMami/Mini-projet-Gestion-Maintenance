@@ -7,7 +7,9 @@ import { Equipement, Panne, Technicien, Intervention, DashboardSummary } from '.
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://127.0.0.1:8080/api';
+  private apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://127.0.0.1:8080/api'
+    : '/api';
 
   constructor(private http: HttpClient) {}
 

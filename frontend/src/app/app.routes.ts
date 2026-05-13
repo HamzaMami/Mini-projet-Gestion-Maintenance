@@ -5,13 +5,14 @@ import { EquipementListComponent } from './components/equipement-list/equipement
 import { PanneListComponent } from './components/panne-list/panne-list.component';
 import { InterventionListComponent } from './components/intervention-list/intervention-list.component';
 import { TechnicienListComponent } from './components/technicien-list/technicien-list.component';
+import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'equipements', component: EquipementListComponent },
-  { path: 'pannes', component: PanneListComponent },
-  { path: 'interventions', component: InterventionListComponent },
-  { path: 'techniciens', component: TechnicienListComponent }
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'equipements', component: EquipementListComponent, canActivate: [AuthGuard] },
+  { path: 'pannes', component: PanneListComponent, canActivate: [AuthGuard] },
+  { path: 'interventions', component: InterventionListComponent, canActivate: [AuthGuard] },
+  { path: 'techniciens', component: TechnicienListComponent, canActivate: [AuthGuard] }
 ];

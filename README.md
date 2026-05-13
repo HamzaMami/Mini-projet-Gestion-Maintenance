@@ -1,103 +1,46 @@
-# 🔧 Maintenance Management System
+# Maintenix - Industrial Maintenance Management System
 
-A full-stack application to manage equipment, failures, interventions,
-and technicians in a maintenance context.
+A professional, enterprise-grade solution for managing industrial assets, maintenance requests, and technician assignments.
 
----
+## 🚀 Recent Upgrades
+- **JWT Authentication**: Secured the entire platform with stateless JSON Web Tokens.
+- **Enterprise Architecture**: Decoupled components using DTOs (Data Transfer Objects) and resolved complex dependency cycles.
+- **Cloud Ready**: Full containerization for both Frontend (Nginx/Angular) and Backend (Spring Boot).
+- **GCP Integration**: Ready for deployment to Google Cloud Run with automated Cloud Build pipelines.
 
-## 🧱 Tech Stack
+## 🛠️ Technology Stack
+- **Frontend**: Angular 21 (Standalone Components, Signals, SCSS)
+- **Backend**: Spring Boot 3.4 (Java 17, Spring Security 6+, JPA/Hibernate)
+- **Database**: MySQL (Compatible with Cloud SQL)
+- **Security**: JWT (jjwt 0.11.5), BCrypt Password Hashing
+- **DevOps**: Docker, Google Cloud Build, Nginx
 
-| Layer | Technology |
-|---|---|
-| Backend | Spring Boot 4.0.5 |
-| Database | MySQL |
-| Frontend | Angular 17+ (Standalone) |
-| Language | Java 25 & TypeScript |
-| ORM | Hibernate / JPA |
-| Build Tool | Maven & NPM |
+## 🔒 Security & Auth
+- **Default Admin**: `admin` / `admin123`
+- **Authentication**: Token-based (JWT). The frontend automatically injects tokens into every request via an `AuthInterceptor`.
 
----
+## ☁️ Cloud Deployment Guide
 
-## 📦 Project Structure
-
-```
-maintenance-app/
-├── backend/            → Spring Boot Project
-│     ├── src/          → Java source code
-│     ├── pom.xml       → Maven configuration
-│     └── ...
-└── frontend/           → Angular Project
-      ├── src/app/      → Angular source code
-      ├── package.json  → NPM configuration
-      └── ...
-```
-
----
-
-## 🗄️ Database Design
-
-### Entities
-
-| Entity | Fields |
-|---|---|
-| `Equipement` | id, nom, etat, dateAcquisition |
-| `Panne` | id, description, categorie, dateSignalement, equipement |
-| `Technicien` | id, nom, competences, disponibilite |
-| `Intervention` | id, statut, date, cout, equipement, technician |
-
-### Relationships
-```
-1 Equipement  →  many Pannes
-1 Equipement  →  many Interventions
-1 Technicien  →  many Interventions
-```
-
----
-
-## 🌐 API Endpoints
-
-### Base URL: `/api`
-
-| Endpoint | Method | Description |
-|---|---|---|
-| `/equipements` | GET | Get all equipment |
-| `/pannes` | GET | Get all failures |
-| `/interventions` | GET | Get all interventions |
-| `/dashboard` | GET | Get system summary |
-
----
-
-## 🚀 How to Run
-
-### 1. Backend Setup
+### 1. Build and Push
+Run the following command from the root directory:
 ```bash
-cd backend
-# Update application.properties with your MySQL credentials
-./mvnw spring-boot:run
+gcloud builds submit --config cloudbuild.yaml .
 ```
 
-### 2. Frontend Setup
+### 2. Manual Service Deployment (Cloud Run)
+
+**Backend:**
 ```bash
-cd frontend
-npm install
-npm start
+gcloud run deploy maintenix-backend \
+  --image gcr.io/[PROJECT_ID]/maintenix-backend \
+  --set-env-vars "DB_URL=jdbc:mysql://[DB_IP]:3306/maintenance_db,DB_USER=root,DB_PASSWORD=[PASS]"
+```
+
+**Frontend:**
+```bash
+gcloud run deploy maintenix-frontend \
+  --image gcr.io/[PROJECT_ID]/maintenix-frontend
 ```
 
 ---
-
-## ✅ Development Status
-
-- [x] Project Restructuring (Backend/Frontend)
-- [x] Backend API Implementation
-- [x] MySQL Integration
-- [x] Angular Frontend Setup
-- [x] Dashboard Component
-- [x] Equipement List Component
-- [ ] Full Frontend Implementation
-- [ ] Final Testing
-
----
-
-## 👨💻 Author
-
-Hamza Mami — GL2 JEE Project
+*Maintenix - Optimizing industrial uptime through intelligent maintenance.*

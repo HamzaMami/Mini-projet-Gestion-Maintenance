@@ -2,6 +2,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -34,6 +35,10 @@ import { Router } from '@angular/router';
               <span class="iconify input-icon" data-icon="lucide:lock"></span>
               <input type="password" [(ngModel)]="password" name="password" placeholder="••••••••" required>
             </div>
+          </div>
+
+          <div *ngIf="error" class="error-msg" style="color: #e53e3e; font-size: 0.85rem; margin-bottom: 1rem; text-align: center;">
+            {{ error }}
           </div>
 
           <div class="login-options">
@@ -110,18 +115,29 @@ export class LoginComponent {
   password = '';
   remember = false;
   loading = false;
+  error = '';
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router, 
+    private cdr: ChangeDetectorRef
+  ) {}
 
   login() {
     if (!this.username || !this.password) return;
     this.loading = true;
+    this.error = '';
     this.cdr.markForCheck();
     
-    // Simulate auth delay
-    setTimeout(() => {
-      localStorage.setItem('isLoggedIn', 'true');
-      this.router.navigate(['/dashboard']);
-    }, 1500);
+    this.authService.login({ username: this.username, password: this.password }).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = 'Invalid credentials or system error.';
+        this.cdr.markForCheck();
+      }
+    });
   }
 }
