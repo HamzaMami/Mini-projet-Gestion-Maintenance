@@ -1,7 +1,16 @@
-# Use Eclipse Temurin for a more stable and cloud-ready Java environment
+# Stage 1: Build the application using Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY pom.xml .
+# Download dependencies
+RUN mvn dependency:go-offline
+COPY src ./src
+# Build the application
+RUN mvn clean package -DskipTests
+
+# Stage 2: Run the application
 FROM eclipse-temurin:17-jdk-focal
 WORKDIR /app
-# Copy the built jar file
-COPY target/*.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

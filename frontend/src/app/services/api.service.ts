@@ -7,7 +7,7 @@ import { Equipement, Panne, Technicien, Intervention, DashboardSummary } from '.
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  private apiUrl = window.location.port === '4200'
     ? 'http://127.0.0.1:8080/api'
     : '/api';
 
